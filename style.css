@@ -1,0 +1,69 @@
+body{
+	padding-left:20px;
+	padding-top:10px;
+	font-family:'Palanquin';
+	line-height:180%;
+}
+
+.mainText{
+	width:calc(100% - 40px);
+}
+
+a{
+	text-decoration: underline;
+	color:#000000;
+}
+
+.title{
+	font-size:120%;
+	font-weight:900;
+	margin-top:20px;
+}
+
+.subtitle{
+	font-size:110%;
+	font-weight:500;
+	margin-left:20px;
+	margin-top:10px;
+}
+
+.item{
+	margin-left:40px;
+	margin-top:18px;
+}
+
+.content{
+	float:right;
+}
+
+.contentItem{
+	float:right;
+}
+
+.highlightElement{
+	background-color:#000000;
+	width:15px;
+	height:50px;
+}
+
+.contentContainer{
+	width:600px;
+}
+
+.centeredVideo{
+	display:block;
+	margin-left:auto;
+	margin-right:auto;
+}
+
+.language{
+	text-transform: uppercase;
+	color:#888888;
+	font-weight: 900;
+}
+
+
+.itemHeader{
+	width:100%;
+	display:block;
+}

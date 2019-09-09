@@ -1,0 +1,164 @@
+<html>
+	<!-- written from scratch by Jonathan Mendelson in 2018 -->
+	<title>Jonathan Mendelson</title>
+	<head>
+		<link href="https://fonts.googleapis.com/css?family=Palanquin:100,700" rel="stylesheet">
+		<link rel="stylesheet" type="text/css" href="style.css">
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+		<script>
+			var links = [{id: "presto", height: 400}, {id: "mobilegamestudio", offset: -100, height: 400}, {id: "prosynth", height: 400}, {id: "celltracking", start: 54, end: 59}, {id: "webapi", start: 48.5, end: 53}, {id: "tap", start: 36, end: 47}, {id: "thearena", start: 32.5, end: 35, sizeOffset: 460}, {id: "crosswordcreator", start: 0, end: 9.2, offset: -200}, {id: "neuralnet", start: 9.7, end: 25}, {id: "chessai", start: 26, end: 31, offset: 215}];
+
+			function createContent(){
+				for(var i = 0; i < links.length; i++){
+					var elemTopY = Math.max(document.body.scrollTop, document.documentElement.scrollTop) + document.getElementById(links[i].id).getBoundingClientRect().top;
+					var elemBotY = Math.max(document.body.scrollTop, document.documentElement.scrollTop) + document.getElementById(links[i].id).getBoundingClientRect().bottom;
+					var sizeY = elemBotY - elemTopY;
+
+					var currContent = document.createElement('div');
+					currContent.id = (links[i].id + '_content');
+					currContent.style.position = 'absolute';
+					var offset = 0;
+					if(typeof(links[i].offset) !== "undefined") offset = links[i].offset;
+
+					var playerId = currContent.id + '_player';
+					var currHeight = 250;
+					if(typeof(links[i].height) !== "undefined") currHeight = links[i].height;
+					if(currContent.id == "presto_content" || currContent.id == "mobilegamestudio_content"){
+						currContent.innerHTML = '<div class="contentContainer"><video class="centeredVideo" muted height="' + currHeight + '" id="' + playerId + '" autoplay><source src="assets/' + links[i].id + '.mp4"></video></div>';
+					}else if(currContent.id == "prosynth_content"){
+						currContent.innerHTML = '<div style="width:500px;margin:50px;margin-top:30px;line-height:130%;"><b>Abstract:</b> We propose a new approach to synthesize Datalog programs from input-output specifications. Our approach 6 leverages query provenance to scale the counterexample-guided inductive synthesis (CEGIS) procedure for program synthesis. In each iteration of the procedure, a SAT solver proposes a candidate Datalog program, and a Datalog solver evaluates the proposed program to determine whether it meets the desired specification. Failure to satisfy the specification results in additional constraints to the SAT solver. We propose efficient algorithms to learn these constraints based on "why" and "why not" provenance information obtained from the Datalog solver. We have implemented our approach in a tool called ProSynth and present experimental results that demonstrate significant improvements over the state-of-the-art, including in synthesizing invented predicates, reducing running times, and in decreasing variances in synthesis performance. On a suite of 40 synthesis tasks from three different domains, ProSynth is able to synthesize the desired program in 10 seconds on average per task - an order of magnitude faster than baseline approaches - and takes under a second for 28 of them.</div>';
+					}else{
+						currContent.innerHTML = '<div class="contentContainer"><video class="centeredVideo" muted height="' + currHeight + '" id="' + playerId + '" autoplay><source src="assets/makersnippets.mp4"></video></div>';
+					}
+
+					currContent.style.top = ((elemTopY + sizeY/2 - currHeight/2 + offset) + 'px');
+					currContent.style.right = (window.innerWidth - 650 - 600)/2 + 'px';
+
+					document.body.appendChild(currContent);
+
+					var highlightElement = document.createElement('div');
+					highlightElement.id = (links[i].id + '_highlight');
+					highlightElement.style.position = 'absolute';
+					highlightElement.style.left = '45px';
+
+					var highlightSizeOffset = 0;	
+					if(typeof(links[i].sizeOffset) !== "undefined") highlightSizeOffset = links[i].sizeOffset;
+
+					highlightElement.style.top = (elemTopY - highlightSizeOffset/2);
+					highlightElement.classList.add('highlightElement');
+					highlightElement.style.height = (sizeY + highlightSizeOffset) + "px";
+					document.body.appendChild(highlightElement);
+				}
+			}
+
+			function checkScroll(){
+				for(var i = 0; i < links.length; i++){
+					var elemY = document.getElementById(links[i].id).getBoundingClientRect().top;
+					var sizeY = elemY - document.getElementById(links[i].id).getBoundingClientRect().bottom;
+					var opacity = 1 - (Math.abs(elemY - window.innerHeight/2 - sizeY/2 )/50 - 0.8);
+					document.getElementById(links[i].id + "_content").style.opacity = opacity;
+					document.getElementById(links[i].id + "_highlight").style.opacity = opacity;
+				}
+			}
+
+			function checkPlayerTimes(){
+				for(var i = 0; i < links.length; i++){
+					if(typeof(links[i].start) !== "undefined" && typeof(links[i].end) !== "undefined"){
+						var currTime = document.getElementById(links[i].id + "_content_player").currentTime;
+						if(currTime > links[i].end || currTime < links[i].start){
+							document.getElementById(links[i].id + "_content_player").currentTime = links[i].start;
+						}
+					}else if(links[i].id != "prosynth"){
+						if(document.getElementById(links[i].id + "_content_player").paused){
+							document.getElementById(links[i].id + "_content_player").currentTime = 0;
+							document.getElementById(links[i].id + "_content_player").play();
+						}
+					}
+				}
+			}
+
+		</script>
+	</head>
+	<body>
+		<div class="content">
+			<!-- will be auto-populated by createContent function -->
+		</div>
+		<div class="mainText" id="mainTextId">
+			<div style="margin-top:70px; margin-bottom:50px;">
+				<div class="title">jonathan mendelson</div>
+				<div class="item" style="margin-left:0px; margin-top:-8px;">Hi! I'm a sophomore at UPenn studying computer science. Scroll down to see some of my projects</div>
+				<div class="item" id="smallNot" style="display:none; color:#777777; margin-left:0px; margin-top:-4px;"><i>use a larger browser to see previews of my work</i></div>
+				<div class="item" style="margin-left:0px; margin-top:15px; width:550px; margin-bottom:120px; margin-top:10px;">
+					<div style="margin-left:calc(30% - 60px); float:left;"><b><a href="mailto:jonom@seas.upenn.edu">email</b></a></div>
+					<div style="margin-left:calc(30% - 50px); float:left;"><b><a href="resume.pdf">resume</b></a></div>
+					<div style="margin-left:calc(30% - 50px); float:left;"><b><a href="http://github.com/jonomendelson">github</a></b></div>
+				</div>
+			</div>
+
+			<div class="title">I learned a lot about comp sci...</div>
+				<div class="item">learned C++, C#, Python, Java</div>
+				<div class="item">web programming (HTML, CSS, JavaScript, PHP, MySQL)</div>
+				<div class="item">iOS programming (Objective-C, Swift, Ionic)</div>
+				<div class="item">machine learning (evolutionary models, gradient descent from scratch, q-learning, Azure, TensorFlow, Scikit-learn)</div>
+				<div class="item">computer vision (openCV)</div>
+				<div class="item">functional programming (OCaml)</div>
+				<div class="item">misc. (Photoshop, After Effects, Bash, MATLAB, LaTeX, Node, Processing, Git)</div>
+				<div class="item">took courses at UPenn
+					<div class="item" style="margin-top:-10px;"><b>CIS 120</b> - Programming Languages and Techniques I</div>
+					<div class="item" style="margin-top:-10px;"><b>CIS 160</b> - Mathematical Foundations of Computer Science</div>
+					<div class="item" style="margin-top:-10px;"><b>CIS 121</b> - Data Structures and Algorithms</div>
+					<div class="item" style="margin-top:-10px;"><b>CIS 240</b> - Introduction to Computer Architecture</div>
+					<div class="item" style="margin-top:-10px;"><b>CIS 262</b> - Automata, Computability, and Complexity <i>[currently enrolled]</i></div>
+					<div class="item" style="margin-top:-10px;"><b>CIS 320</b> - Introduction to Algorithms <i>[currently enrolled]</i></div>
+					<div class="item" style="margin-top:-10px;"><b>CIS 519</b> - Applied Machine Learning <i>[currently enrolled]</i></div>
+
+					<div class="item" style="margin-top:0px;"><b>MATH 114</b> - Calculus II (Multivariable Calculus)</div>
+					<div class="item" style="margin-top:-10px;"><b>MATH 240</b> - Calculus III (Linear Algebra) <i>[currently enrolled]</i></div>
+					<div class="item" style="margin-top:-10px;"><b>MATH 350</b> - Number Theory</div>
+					<div class="item" style="margin-top:-10px;"><b>PHYS 151</b> - Principles of Physics II: Electromagnetism and Radiation</div>
+					<div class="item" style="margin-top:-10px;"><b>STAT 430</b> - Probability</div>
+				</div>
+			<div class="subtitle">and love programming competitions...</div>
+				<div class="item">competed in <b>Round 3</b> of <b><a href="https://codingcompetitions.withgoogle.com/codejam">Google Code Jam 2019</a></b>, Google's annual coding competition. I placed in the top <b>500</b> competitors out of more than <b>35,000</b></div>
+				<div class="item"><b>ranked Platinum</b> in the <a href="http://usaco.org/">USA Computing Olympiad</a>, a multinational algorithmic programming competition. I compete using C++</div>
+				
+
+			<div class="title">And now I build stuff...</div>
+			<div class="subtitle">for businesses</div>
+				<div class="item" id="presto"><b>Presto</b>, which streamlines and modernizes the process of ordering at a restaurant. Presto was awarded up to <b>$50,000 in funding</b> for a maximum of a 5% stake, but I had to end the app when starting college. At Presto's peak, a customer could order from <b>20+ restaurants</b>. Also built a menu scraper in JavaScript to save time when adding new restaurants to the app<div class="language">Ionic, Cordova, Firebase, Stripe, HTML, CSS, TypeScript</div></div>
+				<div class="item"><b>interned at <a href="http://survios.com">Survios</a></b>, a large VR game developer based in Los Angeles. Built software for the business development team to <b>generate a valuable data set of customer behavior</b> (for marketing or operational purposes) by compiling and cross-referencing multiple unreliable and inconsistent data sources<div class="language">HTML, CSS, JavaScript, PHP, AJAX</div></div>
+				<div class="item"><b>interned at <a href="http://invisionapp.com">InVision</a></b>, a web prototyping company used by Amazon, Netflix, Lyft. Built an internal employee database and communication system to facilitate easier meeting scheduling<div class="language">HTML, CSS, JavaScript, PHP, MySQL, Google Maps API</div></div>
+				<div class="item" id="mobilegamestudio"><b>project lead</b> of mobile game studio within UPGRADE club @ UPenn. Responsible for <b>team of 8 programmers</b> & artists<div class="language">Swift, HTML, CSS, JavaScript</div></div>
+				
+			<div class="subtitle">for research</div>
+				<div class="item" id="prosynth">conducting research on Datalog program synthesis using <b>constraint solvers</b> and a novel <b>provenance-guided approach</b>. This past summer, we built ProSynth, which synthesizes programs from sample input-output data much more quickly than previous leading algorithms. Most notably, ProSynth is able to synthesize programs with invented predicates (intermediate constructs for which there is no provided input-output data). Received a <b>$5,000</b> grant from the Penn Undergraduate Research Mentoring Program to conduct research over the summer, and am continuing research on the same project as a Research Assistant in the <a href="https://precise.seas.upenn.edu/">PRECISE Center</a> at UPenn during the year. We currently have a paper in submission to <b><a href="https://conf.researchr.org/home/POPL-2020">POPL 2020</a></b>.<div class="language">Python, Bash</div></div>
+				<div class="item" id="strabismus">working on a project in conjunction with the <b><a href="https://www.eecs.umich.edu/ai/">UMichigan AI Lab</a></b> to measure strabismus via a mobile app, saving ophthalmologists' time from measuring strabismus by hand with a series of prisms. We have <b>submitted an IRB</b> and are waiting for approval to begin the study. <div class="language">Objective-C, OpenCV</div></div>
+				<div class="item" id="celltracking">conducted and wrote all software for an <b>independent research project at UCLA</b> that provided biologists much needed cell tracking software. Written in C++, used computer vision (openCV) to find cells in blurry and low-contrast images, and used machine learning to determine if they are alive. Wrote a report, <i>Automated Hyperdimensional Motile Cell Tracking: Efficient Analysis of High-Throughput Time-Lapse Microscopy Images</i>. Our research was <b>presented at SPIE in January 2018</b><div class="language">C++, OpenCV, Azure; HTML, JavaScript</div></div>
+				<div class="item" id="webapi">designed web tool that allows users to interact with the lab's proprietary edge detection algorithm, Phase Stretch Transform. The tool allows users to upload images, set parameters to interact with the algorithm live, and save or share their creations with others<div class="language">HTML, CSS, JavaScript, Python, PHP, AJAX</div></div>
+			<div class="subtitle">for hackathons</div>
+				<div class="item" id="tap"><a href="https://devpost.com/software/portatouch">Tap</a>, which turns any surface into a touchscreen using piezo sensors and multilateration - <b>Grand Prize winner</b> (LAHacks @ UCLA, 2017)<div class="language">Arduino Java, C++</div></div>
+				<div class="item">Piano Hero (PennApps XV), which makes practicing piano into a game to encourage children to practice more routinely. Piano Hero converts any piano into a Guitar Hero-style game using a projector, a screen, and a camera that tracks which keys are pressed using computer vision<div class="language">C++, SFML, OpenCV</div></div>
+				<div class="item">ScreenHero (HackBCA), a desktop program that allows users to generate screensavers using custom mathetmatical equations<div class="language">C#</div></div>
+				<div class="item" id="thearena">The Arena (DefHacks), a multiplayer online battle-royale top-down game. Players battle for food, water, and weapons to be the last standing in the shrinking map<div class="language">JavaScript, NodeJS, Socket.io</div></div>
+				<div class="item">goGreen - 2nd place (HackMann II), a website that forms carpools based on similarity of user's commutes<div class="language">HTML, CSS, JavaScript, PHP, MySQL</div></div>
+				<div class="item">Forget-Me-Not - 1st place (HackTrin III), software that stimulates and tracks the progress of Alzheimer patients. Software included file saving capabilities for different patients and analysis tools for caretakers<div class="language">C++, SFML</div></div>
+			<div class="subtitle">for fun!</div>
+				<div class="item" id="crosswordcreator">Crossword Creator - constructs a crossword puzzle by creating a tree of possible placements for words, attempting solutions and backtracking when stuck until the grid is filled in<div class="language">HTML, CSS, JavaScript</div></div>
+				<div class="item" id="neuralnet">Javascript Neural Net Library - all math for gradient descent programmed manually. I used this network to read handwritten digits from the MNIST dataset<div class="language">HTML, CSS, JavaScript</div></div>
+				<div class="item" id="chessai">Chess AI - uses minimax and alpha-beta pruning to play chess against player<div class="language">HTML, CSS, JavaScript</div></div>
+
+			<div class="title">I also do other projects...</div>
+			<div class="subtitle">music</div>
+				<div class="item">attended Los Angeles Philarmonic Associate Composer's Program</div>
+				<div class="item">attended <b>Juilliard Pre-College Division Composition Program</b></div>
+				<div class="item">attended New York Youth Symphony Composition Program</div>
+			<div class="subtitle">film</div>
+				<div class="item">Special Delivery - original, special effects heavy film made using Adobe After Effects. <b>National Level Gold Medal winner</b> from the Scholastic Arts and Writing awards</div>
+
+			<div class="item" style="margin-left:10px; margin-top:80px; margin-bottom:40px;">Thanks for reading!</div>
+			
+		</div>
+
+		<script>if(window.innerWidth > 1200){document.getElementById("mainTextId").style.width = '650px';createContent(); window.setInterval(function(){checkScroll(); checkPlayerTimes();}, (1000/30));}else{document.getElementById('smallNot').style.display = 'block'; document.getElementById("mainTextId").style.paddingRight = '40px';}</script>
+	</body>
+</html>
